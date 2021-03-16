@@ -5,7 +5,8 @@
     "dependencies": {
         "core": "*",
         "radio": "*",
-        "microphone": "*"
+        "microphone": "*",
+        "pxt-1602-lcd-4bit": "github:jazzy8/pxt-1602-lcd-4bit#master"
     },
     "files": [
         "README.md",
