@@ -175,9 +175,7 @@ SerialPin.P14,
 SerialPin.P15,
 BaudRate.BaudRate9600
 )
-basic.pause(100)
-serial.writeLine("shw::BBC Microbit")
-basic.pause(100)
+basic.pause(1000)
 serial.writeLine("bkl::255")
 basic.pause(500)
 display_the_time()
