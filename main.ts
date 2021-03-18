@@ -55,7 +55,7 @@ control.onEvent(EventBusSource.MICROBIT_ID_IO_P8, EventBusValue.MICROBIT_BUTTON_
     if (mde == 0) {
         mde = 1
         item = 0
-        serial.writeLine("cls:all")
+        serial.writeLine("cls::all")
         basic.pause(100)
         serial.writeLine("shw::Set Time")
     } else {
@@ -69,7 +69,7 @@ control.onEvent(EventBusSource.MICROBIT_ID_IO_P1, EventBusValue.MICROBIT_BUTTON_
         if (item < 0) {
             item = 2
         }
-        serial.writeLine("cls:all")
+        serial.writeLine("cls::all")
         basic.pause(100)
         if (item == 0) {
             serial.writeLine("shw::Set Time")
@@ -114,7 +114,7 @@ control.onEvent(EventBusSource.MICROBIT_ID_IO_P2, EventBusValue.MICROBIT_BUTTON_
         if (item > 2) {
             item = 0
         }
-        serial.writeLine("cls:all")
+        serial.writeLine("cls::all")
         basic.pause(100)
         if (item == 0) {
             serial.writeLine("shw::Set Time")
