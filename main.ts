@@ -52,12 +52,20 @@ function ok () {
         mde = 2
         serial.writeString("cls::all")
         basic.pause(100)
-        serial.writeLine("shw::set hour " + getHour(h))
+        serial.writeLine("shw::set hour")
+        basic.pause(300)
+        serial.writeLine("cur::00,1")
+        basic.pause(100)
+        serial.writeLine("shw::" + getHour(h))
     } else if (mde == 2) {
         mde = 3
         serial.writeString("cls::all")
         basic.pause(100)
-        serial.writeLine("shw::set minute " + m)
+        serial.writeLine("shw::set minute")
+        basic.pause(300)
+        serial.writeLine("cur::00,1")
+        basic.pause(100)
+        serial.writeLine("shw::" + m)
     } else if (mde == 3) {
         mde = 0
         display_the_time()
@@ -80,17 +88,18 @@ function prev () {
         if (h < 0) {
             h = 23
         }
-        serial.writeLine("cls::all")
+        serial.writeLine("cur::00,1")
         basic.pause(100)
-        serial.writeLine("shw::set hour " + getHour(h))
+        serial.writeLine("shw::" + getHour(h))
     } else if (mde == 3) {
+        s = 0
         m = m - 1
         if (m < 0) {
             m = 59
         }
-        serial.writeLine("cls::all")
+        serial.writeLine("cur::00,1")
         basic.pause(100)
-        serial.writeLine("shw::set minute " + m)
+        serial.writeLine("shw::" + m)
     }
 }
 function next () {
@@ -99,23 +108,45 @@ function next () {
         if (h > 23) {
             h = 0
         }
-        serial.writeLine("cls::all")
+        serial.writeLine("cur::00,1")
         basic.pause(100)
-        serial.writeLine("shw::set hour " + getHour(h))
+        serial.writeLine("shw::" + getHour(h))
     } else if (mde == 3) {
+        s = 0
         m = m + 1
         if (m > 59) {
             m = 0
         }
-        serial.writeLine("cls::all")
+        serial.writeLine("cur::00,1")
         basic.pause(100)
-        serial.writeLine("" + "shw::set minute " + m)
+        serial.writeLine("shw::" + m)
     }
 }
-let s = 0
+function update_the_time () {
+    ampm = "am"
+    qH = h
+    if (qH > 11) {
+        ampm = "pm"
+    }
+    if (qH > 12) {
+        qH = qH - 12
+    }
+    if (qH == 0) {
+        qH = 12
+    }
+    if (m < 10) {
+        qM = "0" + m
+    } else {
+        qM = convertToText(m)
+    }
+    serial.writeLine("cur::00,0")
+    basic.pause(100)
+    serial.writeLine("shw::" + qH + ":" + qM + " " + ampm + " ")
+}
 let old_ms = 0
 let diff = 0
 let new_ms = 0
+let s = 0
 let xam = ""
 let xhh = 0
 let qM = ""
@@ -151,7 +182,7 @@ basic.forever(function () {
             m += Math.floor(s / 60)
             s = s - 60
             if (mde == 0) {
-                display_the_time()
+                update_the_time()
             }
         }
         if (m > 59) {
