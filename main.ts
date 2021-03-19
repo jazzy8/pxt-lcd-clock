@@ -109,9 +109,11 @@ function next () {
         }
         serial.writeLine("cls::all")
         basic.pause(100)
-        serial.writeLine("shw::set minute " + m)
+        serial.writeLine("" + "shw::set minute " + m)
     }
 }
+let s = 0
+let old_ms = 0
 let diff = 0
 let new_ms = 0
 let xam = ""
@@ -129,7 +131,6 @@ item = 0
 radio.setGroup(72)
 h = 0
 m = 0
-let s = 0
 mde = 0
 serial.redirect(
 SerialPin.P14,
@@ -141,21 +142,21 @@ serial.writeLine("bkl::255")
 basic.pause(500)
 display_the_time()
 basic.forever(function () {
-    let old_ms = 0
     new_ms = input.runningTime()
     diff = new_ms - old_ms
     if (diff >= 1000) {
+        old_ms = new_ms
         s += Math.floor(diff / 1000)
         if (s > 59) {
-            s = s - 60
             m += Math.floor(s / 60)
+            s = s - 60
             if (mde == 0) {
                 display_the_time()
             }
         }
         if (m > 59) {
-            m = m - 60
             h += Math.floor(m / 60)
+            m = m - 60
         }
         if (h > 23) {
             h = h - 24
