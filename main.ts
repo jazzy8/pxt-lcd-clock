@@ -20,20 +20,22 @@ function display_the_time () {
     serial.writeLine("shw::" + qH + ":" + qM + " " + ampm + " ")
 }
 input.onButtonPressed(Button.A, function () {
-    if (mde == 1) {
-        mde = 2
-        serial.writeString("cls::all")
-        basic.pause(100)
-        serial.writeLine("shw::set hour " + h)
-    } else if (mde == 2) {
-        mde = 3
-        serial.writeString("cls::all")
-        basic.pause(100)
-        serial.writeLine("shw::set minute " + m)
-    } else {
-    	
-    }
+	
 })
+function getHour (hh: number) {
+    xhh = hh
+    xam = "am"
+    if (xhh > 11) {
+        xam = "pm"
+    }
+    if (xhh > 12) {
+        xhh = xhh - 12
+    }
+    if (xhh == 0) {
+        xhh = 12
+    }
+    return "" + xhh + xam
+}
 control.onEvent(EventBusSource.MICROBIT_ID_IO_P8, EventBusValue.MICROBIT_BUTTON_EVT_CLICK, function () {
     if (mde == 0) {
         mde = 1
@@ -45,21 +47,63 @@ control.onEvent(EventBusSource.MICROBIT_ID_IO_P8, EventBusValue.MICROBIT_BUTTON_
     	
     }
 })
+function ok () {
+    if (mde == 1) {
+        mde = 2
+        serial.writeString("cls::all")
+        basic.pause(100)
+        serial.writeLine("shw::set hour " + getHour(h))
+    } else if (mde == 2) {
+        mde = 3
+        serial.writeString("cls::all")
+        basic.pause(100)
+        serial.writeLine("shw::set minute " + m)
+    } else if (mde == 3) {
+        mde = 0
+        display_the_time()
+    } else {
+    	
+    }
+}
 radio.onReceivedString(function (receivedString) {
     if (receivedString == "next") {
         next()
-    } else if (receivedString == "next") {
+    } else if (receivedString == "prev") {
         prev()
+    } else if (receivedString == "ok") {
+        ok()
     }
 })
 function prev () {
-	
+    if (mde == 2) {
+        if (h > 0) {
+            h = h - 1
+            serial.writeLine("shw::set hour " + getHour(h))
+        }
+    } else if (mde == 3) {
+        if (m > 0) {
+            m = m - 1
+            serial.writeLine("shw::set minute " + m)
+        }
+    }
 }
 function next () {
-	
+    if (mde == 2) {
+        if (h < 23) {
+            h = h + 1
+            serial.writeLine("shw::set hour " + getHour(h))
+        }
+    } else if (mde == 3) {
+        if (m < 59) {
+            m = m + 1
+            serial.writeLine("shw::set minute " + m)
+        }
+    }
 }
 let diff = 0
 let new_ms = 0
+let xam = ""
+let xhh = 0
 let qM = ""
 let qH = 0
 let ampm = ""
