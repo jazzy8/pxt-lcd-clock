@@ -1,11 +1,11 @@
 function display_the_time () {
     ampm = "am"
     qH = h
-    if (qH > 12) {
-        qH = qH - 12
-    }
     if (qH > 11) {
         ampm = "pm"
+    }
+    if (qH > 12) {
+        qH = qH - 12
     }
     if (qH == 0) {
         qH = 12
@@ -76,28 +76,40 @@ radio.onReceivedString(function (receivedString) {
 })
 function prev () {
     if (mde == 2) {
-        if (h > 0) {
-            h = h - 1
-            serial.writeLine("shw::set hour " + getHour(h))
+        h = h - 1
+        if (h < 0) {
+            h = 23
         }
+        serial.writeLine("cls::all")
+        basic.pause(100)
+        serial.writeLine("shw::set hour " + getHour(h))
     } else if (mde == 3) {
-        if (m > 0) {
-            m = m - 1
-            serial.writeLine("shw::set minute " + m)
+        m = m - 1
+        if (m < 0) {
+            m = 59
         }
+        serial.writeLine("cls::all")
+        basic.pause(100)
+        serial.writeLine("shw::set minute " + m)
     }
 }
 function next () {
     if (mde == 2) {
-        if (h < 23) {
-            h = h + 1
-            serial.writeLine("shw::set hour " + getHour(h))
+        h = h + 1
+        if (h > 23) {
+            h = 0
         }
+        serial.writeLine("cls::all")
+        basic.pause(100)
+        serial.writeLine("shw::set hour " + getHour(h))
     } else if (mde == 3) {
-        if (m < 59) {
-            m = m + 1
-            serial.writeLine("shw::set minute " + m)
+        m = m + 1
+        if (m > 59) {
+            m = 0
         }
+        serial.writeLine("cls::all")
+        basic.pause(100)
+        serial.writeLine("shw::set minute " + m)
     }
 }
 let diff = 0
@@ -129,14 +141,6 @@ serial.writeLine("bkl::255")
 basic.pause(500)
 display_the_time()
 basic.forever(function () {
-    if (pins.digitalReadPin(DigitalPin.P8) == 0) {
-        control.raiseEvent(
-        EventBusSource.MICROBIT_ID_IO_P8,
-        EventBusValue.MICROBIT_BUTTON_EVT_CLICK
-        )
-    }
-})
-control.inBackground(function () {
     let old_ms = 0
     new_ms = input.runningTime()
     diff = new_ms - old_ms
@@ -156,5 +160,13 @@ control.inBackground(function () {
         if (h > 23) {
             h = h - 24
         }
+    }
+})
+basic.forever(function () {
+    if (pins.digitalReadPin(DigitalPin.P8) == 0) {
+        control.raiseEvent(
+        EventBusSource.MICROBIT_ID_IO_P8,
+        EventBusValue.MICROBIT_BUTTON_EVT_CLICK
+        )
     }
 })
